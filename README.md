@@ -67,3 +67,129 @@ In the world of Kubernetes:
 - Pod: more or less same as containers. A pod can have multiple containers
 - Deployment: in charge of managing the pods. E.g., If a pod dies it will recreate the pod.
 - Service: it handles access/networking for pods to be reached out running inside the kubernetes.
+
+The config file looks like this:
+
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: posts
+spec:
+  containers:
+    - name: posts
+      image: ms/posts:latest
+```
+
+Apply the config code:
+
+```bash
+
+kubectl apply -f posts.yaml
+```
+
+To see the running pods
+
+```sh
+kubectl get pods
+```
+
+To delete all pods from a given k8s folder
+
+```sh
+kubectl delete -f infra/k8s/
+```
+
+If your pods are showing ErrImagePull, ErrImageNeverPull, or ImagePullBackOff errors after running kubectl apply, the simplest solution is to provide an imagePullPolicy to the pod.
+
+First, run kubectl delete -f infra/k8s/
+
+Then, update your pod manifest:
+
+```yml
+spec:
+  containers:
+    - name: posts
+      image: cygnet/posts:0.0.1
+      imagePullPolicy: Never
+```
+
+Then, run kubectl apply -f infra/k8s/
+
+### Common kubectl commends
+
+- kubectl get pods
+- kubectl exec -it [pod_name] [cmd]
+- kubectl logs [pod_name]
+- kubectl delete pod [pod_name]
+- kubectl apply -f [config_file]
+- kubectl describe pod [pod_name] # mostly for debuging
+
+#### Deployment Object
+
+In practice, we don't create Pods directly, instead, we create Deployment object to manage sets of Pods.
+
+Looks like this
+
+```yml
+piVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels: # just key value pair to match a lable
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts # this works together with the metadata
+    spec:
+      containers:
+        - name: posts
+          image: ms/posts:latest
+          imagePullPolicy: Never
+```
+
+To apply it:
+
+```sh
+
+kubectl apply -f posts-depl.yaml
+
+```
+
+To get deployments
+
+```sh
+kubectl get deployments
+
+```
+
+To delete deployment
+
+```sh
+
+kubectl delete deployment [deployment_name]
+```
+
+Note that the deployment will create pods for you. If you manually delete any pod, it's going to create another one for you automatically. This is the magic of Deployment object - it deploys the pods when necessary for you!!
+
+To always apply the latest version
+
+- use "latest" tag
+- Make update to the code
+- build the image
+- push the image to docker hub
+  - use `docker push [tag_name]
+- run this command
+
+```sh
+kubectl rillout restart deployment [deployment_name]
+```
+
+```sh
+
+
+```
