@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts-depl
+  name: query-depl
 spec:
   replicas: 1 # number of instances you want
   selector:
     matchLabels: # just key value pair to match a lable
-      app: posts
+      app: query
   template:
     metadata:
       labels:
-        app: posts # this works together with the metadata
+        app: query # this works together with the metadata
     spec:
       containers:
-        - name: posts
-          image: hhsu15/posts:latest
+        - name: query
+          image: hhsu15/query:latest
           imagePullPolicy: Never
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-clusterip-srv
+  name: query-srv # thi will serve as the DNS name, within the node
 spec:
   selector:
-    app: posts
+    app: query
   type: ClusterIP
   ports:
-    - name: posts
+    - name: query
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 4002
+      targetPort: 4002

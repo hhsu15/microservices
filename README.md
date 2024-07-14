@@ -125,7 +125,7 @@ Then, run kubectl apply -f infra/k8s/
 - kubectl apply -f [config_file]
 - kubectl describe pod [pod_name] # mostly for debuging
 
-#### Deployment Object
+### Deployment Object
 
 In practice, we don't create Pods directly, instead, we create Deployment object to manage sets of Pods.
 
@@ -176,20 +176,78 @@ kubectl delete deployment [deployment_name]
 
 Note that the deployment will create pods for you. If you manually delete any pod, it's going to create another one for you automatically. This is the magic of Deployment object - it deploys the pods when necessary for you!!
 
-To always apply the latest version
+To always apply the latest version, use the latest tag.
+Here are the steps every time when we change the code we need to rebuild the images and restart the deployment.
 
-- use "latest" tag
 - Make update to the code
 - build the image
+  - docker build -t acct/project:latest .
 - push the image to docker hub
   - use `docker push [tag_name]
 - run this command
+  - kubectl rollout restart deployment [depl_name]
 
 ```sh
-kubectl rillout restart deployment [deployment_name]
+kubectl rollout restart deployment [deployment_name]
 ```
+
+### Services object
+
+Services are responsible for network between pods.
+Types of services:
+
+- Cluster IP: sets up a URL to access pod so the pods can communicate with each other through it. Only expose pods in the cluster/within the node.
+- Node Port: makes a pod accessible from outside the cluster - mostly for dev only. Basically like a loadbalancer. It will have a randomly assigned port (like 30XXX) for you to send request to.
+- Load Balancer: makes a pod accessible from outside the cluste - the right way to do.
+- External Name: redirecs an in-cluster reauest to a CNAME url.
+
+#### Example of Node Port service (just for dev purpose):
 
 ```sh
 
-
+kubectl apply -f post-srv.yaml
 ```
+
+Then to get the port you need to use to access the service,
+
+```sh
+kubectl describe services posts-srv
+```
+
+You can then find the randomly assign port 30xxx/TCP and that's what we need to use to access the pod.
+
+For Docker for Mac/Windows,now you will use `localhost:30xxx/posts` to access the pod. You can just try it using your browser.
+
+#### Cluster IP Service
+
+For pods to communicate between each other we will create Cluster IP services. This allows you to use the name of the service (like, "event-bus-srv") as DNS rather than using the IP address.
+
+Refer to `event-bus-depl.yaml`. After you apply this file and have the Service up and running, you will make a request to the url like `http://event-bus-srv:4005` to reach out to the service.
+
+#### Load Balancer Service
+
+To allow access from outside (i.e., the browser) we will create a load balancer service.
+
+This is the overall diagram:
+![diagram1](./img/diagram1.png)
+
+The Load Balancer tells K8s to reach out to its cloud provider (e.g., AWS) and provision a loadbalancer and gets traffic into "a single" pod.
+
+The Load Balancer alone is not going to know which pod it should route the traffic to...that's where the `Ingress/Ingress` Controller comes in to play.
+
+#### Ingress
+
+Ingress is a pod with a set of routing rules to distribute traffic to other pods (or more acurately, Cluster Ip Services).
+
+![diagram1](./img/diagram2.png)
+
+##### Install Ingress Nginx Controller
+
+Installation
+Based on the Kubernates documentation:
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+```
+
+Then we will create the config file `ingress-srv-depl.yaml` for ingress.

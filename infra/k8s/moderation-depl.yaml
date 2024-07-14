@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts-depl
+  name: moderation-depl
 spec:
   replicas: 1 # number of instances you want
   selector:
     matchLabels: # just key value pair to match a lable
-      app: posts
+      app: moderation
   template:
     metadata:
       labels:
-        app: posts # this works together with the metadata
+        app: moderation # this works together with the metadata
     spec:
       containers:
-        - name: posts
-          image: hhsu15/posts:latest
+        - name: moderation
+          image: hhsu15/moderation:latest
           imagePullPolicy: Never
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-clusterip-srv
+  name: moderation-srv # thi will serve as the DNS name, within the node
 spec:
   selector:
-    app: posts
+    app: moderation
   type: ClusterIP
   ports:
-    - name: posts
+    - name: moderation
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 4003
+      targetPort: 4003

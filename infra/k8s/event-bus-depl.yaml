@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts-depl
+  name: event-bus-depl
 spec:
   replicas: 1 # number of instances you want
   selector:
     matchLabels: # just key value pair to match a lable
-      app: posts
+      app: event-bus
   template:
     metadata:
       labels:
-        app: posts # this works together with the metadata
+        app: event-bus # this works together with the metadata
     spec:
       containers:
-        - name: posts
-          image: hhsu15/posts:latest
+        - name: event-bus
+          image: hhsu15/event-bus:latest
           imagePullPolicy: Never
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-clusterip-srv
+  name: event-bus-srv # thi will serve as the DNS name
 spec:
   selector:
-    app: posts
+    app: event-bus
   type: ClusterIP
   ports:
-    - name: posts
+    - name: event-bus
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 4005
+      targetPort: 4005

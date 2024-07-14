@@ -1,32 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts-depl
+  name: comments-depl
 spec:
   replicas: 1 # number of instances you want
   selector:
     matchLabels: # just key value pair to match a lable
-      app: posts
+      app: comments
   template:
     metadata:
       labels:
-        app: posts # this works together with the metadata
+        app: comments # this works together with the metadata
     spec:
       containers:
-        - name: posts
-          image: hhsu15/posts:latest
+        - name: comments
+          image: hhsu15/comments:latest
           imagePullPolicy: Never
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-clusterip-srv
+  name: comments-srv # thi will serve as the DNS name, within the node
 spec:
   selector:
-    app: posts
+    app: comments
   type: ClusterIP
   ports:
-    - name: posts
+    - name: comments
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 4001
+      targetPort: 4001

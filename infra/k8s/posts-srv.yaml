@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort # for dev only
+  selector: # this is how you tell the service to find all the pods with the label of app:posts and expose them to the outside world
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000 # this thing is just setting where to run the NodePort service, it really can be any port but by convention we use the same as the target
+      targetPort: 4000 # the NodePort svc needs to send the trafic to (4000 is where the pod/container for this one (posts) is listing to)
