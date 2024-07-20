@@ -251,3 +251,4 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ```
 
 Then we will create the config file `ingress-srv-depl.yaml` for ingress.
+The ingress does not allow you to specify the method like get, post..so you need to make sure all the endpoints have an unique name.
