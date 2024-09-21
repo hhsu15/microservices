@@ -15,7 +15,7 @@ spec:
       containers:
         - name: comments
           image: hhsu15/comments:latest
-          imagePullPolicy: Never
+          # imagePullPolicy: Never
 
 ---
 apiVersion: v1

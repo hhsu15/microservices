@@ -15,13 +15,13 @@ spec:
       containers:
         - name: event-bus
           image: hhsu15/event-bus:latest
-          imagePullPolicy: Never
+          # imagePullPolicy: Never
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: event-bus-srv # thi will serve as the DNS name
+  name: event-bus-srv # thi will serve as the DNS name, within the node
 spec:
   selector:
     app: event-bus

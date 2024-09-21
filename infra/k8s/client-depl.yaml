@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: hhsu15/client:latest
+          image: hhsu15/blog-client:latest
           imagePullPolicy: Never
 
 ---

@@ -1,0 +1,57 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+build:
+  artifacts:
+    - image: hhsu15/client
+      context: blog/client
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: hhsu15/comments
+      context: services/comments
+      sync:
+        manual:
+          - src: '/**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: hhsu15/event-bus
+      context: services/event-bus
+      sync:
+        manual:
+          - src: '/**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: hhsu15/moderation
+      context: services/moderation
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: hhsu15/posts
+      context: services/posts
+      sync:
+        manual:
+          - src: '/**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: hhsu15/query
+      context: services/query
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+  local:
+    push: false
+manifests:
+  rawYaml:
+    - ./infra/k8s/*

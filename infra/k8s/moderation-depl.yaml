@@ -15,7 +15,7 @@ spec:
       containers:
         - name: moderation
           image: hhsu15/moderation:latest
-          imagePullPolicy: Never
+          # imagePullPolicy: Never
 
 ---
 apiVersion: v1

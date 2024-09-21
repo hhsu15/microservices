@@ -252,3 +252,13 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 Then we will create the config file `ingress-srv-depl.yaml` for ingress.
 The ingress does not allow you to specify the method like get, post..so you need to make sure all the endpoints have an unique name.
+
+#### Skaffold
+
+Use skaffold for development in K8s should make your live easier when you need to update code in a running pod.
+It automates the tasks to create/delete all objects tied to a project at once.
+
+```sh
+
+brew install skaffold
+```
