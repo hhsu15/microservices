@@ -3,7 +3,7 @@ kind: Config
 build:
   artifacts:
     - image: hhsu15/client
-      context: blog/client
+      context: client
       sync:
         manual:
           - src: 'src/**/*.js'
